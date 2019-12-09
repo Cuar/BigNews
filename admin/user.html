@@ -69,6 +69,7 @@
         </div>
     </div>
 </body>
+<script src="./libs/http.js"></script>
 <script>
 $(function(){
     $.get({
@@ -76,10 +77,22 @@ $(function(){
     success:function(res){
         //$('input.xxx').val(res.data.xx);
         for(var key in res.data){
-            $()
+            $('input'+key).val(res.data[key]);
         }
+        $('img.user_pic').attr('src',res.data.user_datail);
     }
+
 })
+
+$('.btn-edit').on('click',function(e){
+    e.preventDefault();
+
+    //获取表单数据
+    var form =$('#form')[0];
+    var userdata=new FormData(form);
+    
+})
+
 })
 </script>
 </html>
