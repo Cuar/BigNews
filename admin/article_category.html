@@ -213,12 +213,56 @@ else {
                   
 
                 }
-                
+                $('#btn-confirm').on('click',function(){
+                    let name =$('#recipient-name').val();
+                    let slug =$('#message-text').val();
+                    let id =$('#cateid').val();
+                    //发送
+                    $.post({
+                        url: BigNew.category_edit,
+                            data: {
+                                id: id,
+                                name: name,
+                                slug: slug
+                            },
+                            success:function(res){
+                                if(res.code =200){
+                                    $('#myModal').modal('hide')
+                                    getData();
+                                }
+                            }
+
+                    })
+                })
        
 
       });
       //给删除注册一个点击事件
       // 因为这个删除是动态生成的，我们不能直接给他注册点击事件，需要使用委托
+
+      $('tbody').on('click','#btn-delete',function(){
+          //返回属性的值
+          let  deleteId =$(this).attr('data-id');
+          //弹出提示框
+          let ans =confirm('删除');
+
+          if(ans){
+              $.post({
+                  url:BigNew. category_delete,
+                  data:{
+                      id : deleteId
+                  },
+                  success:function(res){
+                      if(res.code ==204){
+                          //如果删除成功的话刷新一次
+                        getData();
+                      }
+                  }
+              })
+          }
+
+         
+      })
     });
   </script>
 </html>
