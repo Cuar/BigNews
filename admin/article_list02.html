@@ -116,7 +116,7 @@ $(function(){
                  $('#selCategory').html(htmlStr);
             }
         }
-    });
+    });1
 
     //  封装一个存储数据的方法
     function getData(pages,callback){
@@ -130,6 +130,9 @@ $(function(){
                 perpage: perpage
             },
             success:function(res){
+                console.log('function(res)-----'+res);
+                console.log('callback-----------'+callback);
+
                 let htmlStr = template('artList', res);
                 $('tbody').html(htmlStr);
                 if(res.data.data.length !=0 &&callback !=null){
@@ -164,7 +167,7 @@ $(function(){
                     last: '尾页',
                     onPageClick: function (event, page) {
                         mypage = page;
-                        getData(mypage, null);
+                        getData(mypage, function(){});
                     }
                 });
             })
@@ -211,6 +214,9 @@ $(function(){
                             // console.log(res);
                             // window.location.reload();
                             getData(mypage,function(res){
+                                console.log('function(res)-----'+res);
+
+
                                 $('#pagination-demo').twbsPagination('changeTotalPages',res.data.totalPage,mypage)
                             })
                         }
