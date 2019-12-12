@@ -28,7 +28,7 @@
 <body>
     <div class="container-fluid">
         <div class="common_title">
-            文章发表
+            文章编辑
         </div>
         <div class="container-fluid common_con">
             <form class="form-horizontal article_form" id="form">
@@ -61,8 +61,7 @@
                     <label class="col-sm-2 control-label">发布时间：</label>
                     <div class="jeinpbox col-sm-4">
                         <input type="text" class="jeinput" id="testico" placeholder="YYYY-MM-DD" name="date">
-                        <div class="icons jebtns"
-                            onclick="jeDate('#testico',{trigger:false,format: 'YYYY-MM-DD',zIndex:30000})">
+                        <div class="icons jebtns" onclick="jeDate('#testico',{trigger:false,format: 'YYYY-MM-DD',zIndex:30000})">
                         </div>
                     </div>
                 </div>
@@ -74,7 +73,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success btn-edit">发表</button>
+                        <button type="submit" class="btn btn-success btn-edit">修改</button>
                         <button type="submit" class="btn btn-default btn-draft">存为草稿</button>
                     </div>
                 </div>
@@ -114,11 +113,10 @@
             // 3.添加日期插件 
             //添加这个方法的目的是为了让日期插件在点击输入框的时候也能关联到日期
             jeDate("#testico", {
-                isinitVal: true,
                 format: "YYYY-MM-DD",
                 isTime: false,
                 minDate: "2014-09-19 00:00:00",
-                zIndex: 30000
+                zIndex:30000
             })
             // 4.添加富文本编辑器
             var E = window.wangEditor
@@ -128,8 +126,27 @@
 
 
             //----------------------------------------------------------------------------
-
-
+            // 根据不同的文章的id获取到文章的具体数据，然后将数据渲染到页面不同的框中
+            //获取到文章的id？？？？？
+            let articleId = location.search.split('=')[1];
+            // console.log(articleId);
+            //发送ajax请求获取文章数据
+            $.get({
+                url: BigNew.article_search,
+                data: {
+                    id: articleId
+                },
+                success: function (res) {
+                    // console.log(res);
+                    if (res.code == 200) {
+                        $('#inputTitle').val(res.data.title);
+                        $('img.article_cover').attr('src', res.data.cover);
+                        $('select.category').val(res.data.categoryId);
+                        $('#testico').val(res.data.date);
+                        editor.txt.html(res.data.content);
+                    }
+                }
+            });
 
             //当点击修改的按钮的时候，将文章数据更新，注册点击事件
             $('button.btn-edit').on('click', function (e) {
@@ -140,15 +157,15 @@
                 fd.append('content', editor.txt.html());
                 //修改完文章。默认是已经发布
                 fd.append('state', '已发布');
+                fd.append('id', articleId);
 
-                //发送ajax请求，添加文章数据
+                //发送ajax请求
                 $.post({
-                    url: BigNew.article_publish,
+                    url: BigNew.article_edit,
                     data: fd,
                     processData: false,
                     contentType: false,
                     success: function (res) {
-                        // console.log(res);
                         if (res.code == 200) {
                             window.history.back();
                         }
@@ -166,17 +183,17 @@
                 //使用formData的方式来提交数据
                 let fd = new FormData($('#form')[0]);
                 fd.append('content', editor.txt.html());
-                //修改完文章。默认是已经发布  默认就是存草稿
+                //修改完文章。默认是已经发布
                 // fd.append('state', '已发布');
+                fd.append('id', articleId);
 
-                //发送ajax请求，添加文章数据
+                //发送ajax请求
                 $.post({
-                    url: BigNew.article_publish,
+                    url: BigNew.article_edit,
                     data: fd,
                     processData: false,
                     contentType: false,
                     success: function (res) {
-                        // console.log(res);
                         if (res.code == 200) {
                             window.history.back();
                         }
